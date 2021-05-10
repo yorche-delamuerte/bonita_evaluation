@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: bonita-service
+  labels:
+    app: bonita
+spec:
+  type: NodePort
+  ports:
+  - port: 8080
+  selector:
+    app: bonita-vars
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bonita-vars
+  labels:
+    purpose: demonstrate-envars
+spec:
+  selector:
+    matchLabels:
+      app: bonita-vars
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: bonita-vars
+    spec:
+      containers:
+      - name: hello-bonita-container
+        image: bonita
+        env:
+        - name: TENANT_LOGIN
+          value: "tech_user"
+        - name: TENANT_PASSWORD
+          value: "secret"
+        ports:
+        - containerPort: 8080
